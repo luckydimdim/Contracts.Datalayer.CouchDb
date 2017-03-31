@@ -10,7 +10,7 @@ namespace Cmas.DataLayers.CouchDb.Contracts.Commands
     {
         public async Task<DeleteContractCommandContext> Execute(DeleteContractCommandContext commandContext)
         {
-            using (var store = new MyCouchStore("http://cmas-backend:backend967@cm-ylng-msk-03:5984", "cmas"))
+            using (var store = new MyCouchStore(DbConsts.DbConnectionString, DbConsts.DbName))
             {
                 bool success =  await store.DeleteAsync(commandContext.Id);
 

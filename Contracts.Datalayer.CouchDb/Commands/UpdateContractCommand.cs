@@ -19,7 +19,7 @@ namespace Cmas.DataLayers.CouchDb.Contracts.Commands
 
         public async Task<UpdateContractCommandContext> Execute(UpdateContractCommandContext commandContext)
         {
-            using (var client = new MyCouchClient("http://cmas-backend:backend967@cm-ylng-msk-03:5984", "cmas"))
+            using (var client = new MyCouchClient(DbConsts.DbConnectionString, DbConsts.DbName))
             {
                 // FIXME: нельзя так делать, надо от frontend получать
                 var existingDoc = (await client.Entities.GetAsync<ContractDto>(commandContext.Form.Id)).Content;

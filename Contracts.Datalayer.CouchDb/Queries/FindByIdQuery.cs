@@ -20,7 +20,7 @@ namespace Cmas.DataLayers.CouchDb.Contracts.Queries
 
         public async Task<Contract> Ask(FindById criterion)
         {
-            using (var client = new MyCouchClient("http://cmas-backend:backend967@cm-ylng-msk-03:5984", "cmas"))
+            using (var client = new MyCouchClient(DbConsts.DbConnectionString, DbConsts.DbName))
             { 
                 var dto = await client.Entities.GetAsync<ContractDto>(criterion.Id);
 

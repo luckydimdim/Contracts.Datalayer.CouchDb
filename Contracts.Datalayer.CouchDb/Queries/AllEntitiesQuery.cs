@@ -22,11 +22,11 @@ namespace Cmas.DataLayers.CouchDb.Contracts.Queries
 
         public async Task<IEnumerable<Contract>> Ask(AllEntities criterion)
         {
-            using (var client = new MyCouchClient("http://cmas-backend:backend967@cm-ylng-msk-03:5984", "cmas"))
+            using (var client = new MyCouchClient(DbConsts.DbConnectionString, DbConsts.DbName))
             {
                 var result = new List<Contract>();
 
-                var query = new QueryViewRequest("contracts", "all");
+                var query = new QueryViewRequest(DbConsts.DesignDocumentName, DbConsts.AllDocsViewName);
 
                 var viewResult = await client.Views.QueryAsync<ContractDto>(query);
 
