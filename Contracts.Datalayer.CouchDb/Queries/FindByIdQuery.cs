@@ -5,12 +5,15 @@ using MyCouch;
 using Cmas.Infrastructure.Domain.Queries;
 using Cmas.BusinessLayers.Contracts.Entities;
 using Cmas.Infrastructure.Domain.Criteria;
+using Cmas.Infrastructure.ErrorHandler;
+using System;
+using System.Net;
+using MyCouch.Responses;
 
 namespace Cmas.DataLayers.CouchDb.Contracts.Queries
 {
     public class FindByIdQuery : IQuery<FindById, Task<Contract>>
     {
-
         private IMapper _autoMapper;
 
         public FindByIdQuery(IMapper autoMapper)
@@ -21,15 +24,21 @@ namespace Cmas.DataLayers.CouchDb.Contracts.Queries
         public async Task<Contract> Ask(FindById criterion)
         {
             using (var client = new MyCouchClient(DbConsts.DbConnectionString, DbConsts.DbName))
-            { 
-                var dto = await client.Entities.GetAsync<ContractDto>(criterion.Id);
+            {
+                GetEntityResponse<ContractDto> result = await client.Entities.GetAsync<ContractDto>(criterion.Id);
 
-                var contract = _autoMapper.Map<Contract>(dto.Content);
-                contract.Id = dto.Content._id;
+                if (!result.IsSuccess)
+                {
+                    if (result.StatusCode == HttpStatusCode.NotFound)
+                    {
+                        throw new NotFoundErrorException(result.ToStringDebugVersion());
+                    }
 
-                return contract;
+                    throw new Exception(result.ToStringDebugVersion());
+                }
+
+                return _autoMapper.Map<Contract>(result.Content);
             }
-
         }
     }
 }

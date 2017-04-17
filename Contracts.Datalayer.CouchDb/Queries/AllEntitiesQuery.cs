@@ -30,10 +30,9 @@ namespace Cmas.DataLayers.CouchDb.Contracts.Queries
 
                 var viewResult = await client.Views.QueryAsync<ContractDto>(query);
 
-                foreach (var row in viewResult.Rows.OrderByDescending(s=>s.Value.CreatedAt))
-                { 
+                foreach (var row in viewResult.Rows.OrderByDescending(s => s.Value.CreatedAt))
+                {
                     var contract = _autoMapper.Map<Contract>(row.Value);
-                    contract.Id = row.Value._id;
                     result.Add(contract);
                 }
 
@@ -41,6 +40,4 @@ namespace Cmas.DataLayers.CouchDb.Contracts.Queries
             }
         }
     }
-
-
 }
