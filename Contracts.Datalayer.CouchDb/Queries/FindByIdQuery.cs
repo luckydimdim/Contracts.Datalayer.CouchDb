@@ -1,44 +1,35 @@
 ﻿using System.Threading.Tasks;
 using AutoMapper;
 using Cmas.DataLayers.CouchDb.Contracts.Dtos;
-using MyCouch;
 using Cmas.Infrastructure.Domain.Queries;
 using Cmas.BusinessLayers.Contracts.Entities;
 using Cmas.Infrastructure.Domain.Criteria;
-using Cmas.Infrastructure.ErrorHandler;
-using System;
-using System.Net;
-using MyCouch.Responses;
+using Cmas.DataLayers.Infrastructure;
+using Microsoft.Extensions.Logging;
 
 namespace Cmas.DataLayers.CouchDb.Contracts.Queries
 {
     public class FindByIdQuery : IQuery<FindById, Task<Contract>>
     {
-        private IMapper _autoMapper;
+        private readonly IMapper _autoMapper;
+        private readonly ILogger _logger;
+        private readonly CouchWrapper _couchWrapper;
 
-        public FindByIdQuery(IMapper autoMapper)
+        public FindByIdQuery(IMapper autoMapper, ILoggerFactory loggerFactory)
         {
             _autoMapper = autoMapper;
+            _logger = loggerFactory.CreateLogger<FindByIdQuery>();
+            _couchWrapper = new CouchWrapper(DbConsts.DbConnectionString, DbConsts.DbName, _logger);
         }
 
         public async Task<Contract> Ask(FindById criterion)
         {
-            using (var client = new MyCouchClient(DbConsts.DbConnectionString, DbConsts.DbName))
+            var result = await _couchWrapper.GetResponseAsync(async (client) =>
             {
-                GetEntityResponse<ContractDto> result = await client.Entities.GetAsync<ContractDto>(criterion.Id);
+                return await client.Entities.GetAsync<ContractDto>(criterion.Id);
+            });
 
-                if (!result.IsSuccess)
-                {
-                    if (result.StatusCode == HttpStatusCode.NotFound)
-                    {
-                        throw new NotFoundErrorException(result.ToStringDebugVersion());
-                    }
-
-                    throw new Exception(result.ToStringDebugVersion());
-                }
-
-                return _autoMapper.Map<Contract>(result.Content);
-            }
+            return _autoMapper.Map<Contract>(result.Content);
         }
     }
 }

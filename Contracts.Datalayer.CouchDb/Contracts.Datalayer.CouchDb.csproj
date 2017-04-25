@@ -20,6 +20,7 @@
     <PackageReference Include="Cmas.Infrastructure.Domain" Version="*" />
     <PackageReference Include="Cmas.BusinessLayers.Contracts" Version="*" />
     <PackageReference Include="Cmas.Infrastructure.ErrorHandler" Version="*" />
+    <PackageReference Include="Cmas.DataLayers.CouchWrapper" Version="*" />
   </ItemGroup>
 
 </Project>

@@ -8,7 +8,10 @@ namespace Cmas.DataLayers.CouchDb.Contracts
     {
         public AutoMapperProfile()
         {
-            CreateMap<Contract, ContractDto>();
+            CreateMap<Contract, ContractDto>()
+              .ForMember(
+                dest => dest._id,
+                opt => opt.MapFrom(src => src.Id));
 
             CreateMap<ContractDto, Contract>()
                 .ForMember(
