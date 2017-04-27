@@ -12,7 +12,7 @@ namespace Cmas.DataLayers.CouchDb.Contracts.Dtos
         public String FinishDate;
         public String ContractorName;
         public String Currency;
-        public String Amount;
+        public double Amount;
         public bool VatIncluded;
         public String ConstructionObjectName;
         public String ConstructionObjectTitleName;
