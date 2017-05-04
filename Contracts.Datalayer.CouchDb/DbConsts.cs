@@ -8,7 +8,7 @@
         /// <summary>
         /// Имя БД
         /// </summary>
-        public const string DbName = "cmas";    //FIXME: перенести в конфиг
+        public const string DbName = "contracts";    //FIXME: перенести в конфиг
 
         /// <summary>
         /// Строка подключения к БД
