@@ -8,8 +8,8 @@ namespace Cmas.DataLayers.CouchDb.Contracts.Dtos
         public String _rev;
         public String Name;
         public String Number;
-        public String StartDate;
-        public String FinishDate;
+        public DateTime? StartDate;
+        public DateTime? FinishDate;
         public String ContractorName;
         public String Currency;
         public double Amount;
