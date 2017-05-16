@@ -4,21 +4,20 @@ using Cmas.DataLayers.CouchDb.Contracts.Dtos;
 using Cmas.Infrastructure.Domain.Commands;
 using Cmas.BusinessLayers.Contracts.CommandsContexts;
 using Cmas.DataLayers.Infrastructure;
-using Microsoft.Extensions.Logging;
+using System;
 
 namespace Cmas.DataLayers.CouchDb.Contracts.Commands
 {
     public class UpdateContractCommand : ICommand<UpdateContractCommandContext>
     {
-        private IMapper _autoMapper;
-        private readonly ILogger _logger;
+        private readonly IMapper _autoMapper;
         private readonly CouchWrapper _couchWrapper;
 
-        public UpdateContractCommand(IMapper autoMapper, ILoggerFactory loggerFactory)
+        public UpdateContractCommand(IServiceProvider serviceProvider)
         {
-            _autoMapper = autoMapper;
-            _logger = loggerFactory.CreateLogger<UpdateContractCommand>();
-            _couchWrapper = new CouchWrapper(DbConsts.DbConnectionString, DbConsts.DbName, _logger);
+            _autoMapper = (IMapper)serviceProvider.GetService(typeof(IMapper));
+
+            _couchWrapper = new CouchWrapper(serviceProvider, DbConsts.ServiceName);
         }
 
         public async Task<UpdateContractCommandContext> Execute(UpdateContractCommandContext commandContext)

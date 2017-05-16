@@ -1,42 +1,37 @@
 ﻿using System.Threading.Tasks;
 using AutoMapper;
 using Cmas.DataLayers.CouchDb.Contracts.Dtos;
-using MyCouch;
 using Cmas.Infrastructure.Domain.Commands;
 using Cmas.BusinessLayers.Contracts.CommandsContexts;
 using Cmas.DataLayers.Infrastructure;
-using Microsoft.Extensions.Logging;
+using System;
 
 namespace Cmas.DataLayers.CouchDb.Contracts.Commands
 {
     public class CreateContractCommand : ICommand<CreateContractCommandContext>
     {
-        private IMapper _autoMapper;
-        private readonly ILogger _logger;
+        private readonly IMapper _autoMapper;
         private readonly CouchWrapper _couchWrapper;
 
-        public CreateContractCommand(IMapper autoMapper, ILoggerFactory loggerFactory)
+        public CreateContractCommand(IServiceProvider serviceProvider)
         {
-            _autoMapper = autoMapper;
-            _logger = loggerFactory.CreateLogger<CreateContractCommand>();
-            _couchWrapper = new CouchWrapper(DbConsts.DbConnectionString, DbConsts.DbName, _logger);
+            _autoMapper = (IMapper)serviceProvider.GetService(typeof(IMapper));
+
+            _couchWrapper = new CouchWrapper(serviceProvider, DbConsts.ServiceName);
         }
 
         public async Task<CreateContractCommandContext> Execute(CreateContractCommandContext commandContext)
         {
-            using (var store = new MyCouchStore(DbConsts.DbConnectionString, DbConsts.DbName))
+            var doc = _autoMapper.Map<ContractDto>(commandContext.Form);
+
+            var result = await _couchWrapper.GetResponseAsync(async (client) =>
             {
-                var doc = _autoMapper.Map<ContractDto>(commandContext.Form);
+                return await client.Entities.PostAsync(doc);
+            });
 
-                var result = await _couchWrapper.GetResponseAsync(async (client) =>
-                {
-                    return await client.Entities.PostAsync(doc);
-                });
+            commandContext.Id = result.Id;
 
-                commandContext.Id = result.Id;
-
-                return commandContext;
-            }
+            return commandContext;
         }
     }
 }
