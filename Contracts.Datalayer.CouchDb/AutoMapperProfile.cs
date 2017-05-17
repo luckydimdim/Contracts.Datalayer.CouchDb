@@ -13,10 +13,14 @@ namespace Cmas.DataLayers.CouchDb.Contracts
                 dest => dest._id,
                 opt => opt.MapFrom(src => src.Id));
 
+            CreateMap<Amount, AmountDto>();
+
             CreateMap<ContractDto, Contract>()
                 .ForMember(
                     dest => dest.Id,
                     opt => opt.MapFrom(src => src._id));
+
+            CreateMap<AmountDto, Amount>();
         }
     }
 }
