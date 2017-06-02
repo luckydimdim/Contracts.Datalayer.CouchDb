@@ -38,12 +38,12 @@ namespace Cmas.DataLayers.CouchDb.Contracts.Dtos
         /// <summary>
         /// Дата заключения
         /// </summary>
-        public DateTime? StartDate;
+        public DateTime StartDate;
 
         /// <summary>
         /// Дата окончания
         /// </summary>
-        public DateTime? FinishDate;
+        public DateTime FinishDate;
 
         /// <summary>
         /// Имя подрядчика
